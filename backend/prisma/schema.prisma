@@ -1,0 +1,38 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model
+model User {
+  id                        Int                        @id @default(autoincrement())
+  name                      String                     @unique
+  email                     String                     @unique
+  password                  String
+  age                       Int
+  profileImg                String?                   @default("default.jpg")
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  projects                  Project[]
+  comments                  Comment[]
+  ProjectMembershipActivities                ProjectMembershipActivity[]
+  taskActivities                           TaskActivity[]
+  projectMemberAssociations ProjectMemberAssociation[]
+  teamMembers               TeamMember[]
+  tasksAssigne              Task[]                     @relation("TaskAssignee")
+  tasksCreator              Task[]                     @relation("TaskCreator")
+  UserSkill                 UserSkill[]
+  teams                     Team[]
+  teamChats                 TeamChat[] // Relation to the TeamChat model
+  sentMessages              UserChat[] @relation("UserChatSender")  // Sent messages in UserChat
+  receivedMessages          UserChat[] @relation("UserChatReceiver") // Received messages in UserChat
+  authorizations Authorization[]
+
+  @@index([name]) // Index on name
+  @@index([email]) // Index on email
+  @@index([password])
+}
